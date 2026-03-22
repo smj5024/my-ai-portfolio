@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>DQN游戏控制项目</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .project-img { max-height: 300px; object-fit: contain; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="../index.html">AI Learning Portfolio</a>
+    </div>
+  </nav>
+
+  <div class="container my-5">
+    <h1 class="mb-4">深度Q网络(DQN)游戏控制</h1>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <img src="../assets/img/dqn-game.png" class="img-fluid project-img" alt="DQN游戏示例">
+      </div>
+      <div class="col-md-6">
+        <h3>项目概述</h3>
+        <p>使用PyTorch实现DQN算法，控制AI在Atari游戏Pong中的表现。</p>
+        
+        <h3>核心创新</h3>
+        <ul>
+          <li>经验回放机制：解决样本相关性问题</li>
+          <li>目标网络：稳定Q值估计</li>
+          <li>ε-greedy策略：平衡探索与利用</li>
+        </ul>
+        
+        <h3>性能指标</h3>
+        <table class="table table-striped">
+          <tr><th>指标</th><th>结果</th></tr>
+          <tr><td>平均得分</td><td>200+</td></tr>
+          <tr><td>收敛迭代</td><td>15k</td></tr>
+        </table>
+      </div>
+    </div>
+    
+    <div class="mt-5">
+      <h3>代码片段</h3>
+      <pre><code class="language-python" data-trim>
+# DQN核心更新逻辑
+def update(self, state, action, reward, next_state, done):
+    # 1. 计算目标Q值
+    target = reward
+    if not done:
+        target += self.gamma * torch.max(self.q_network(next_state))
+    
+    # 2. 计算当前Q值
+    current = self.q_network(state)[action]
+    
+    # 3. 优化损失
+    loss = self.criterion(current, target)
+    self.optimizer.zero_grad()
+    loss.backward()
+    self.optimizer.step()
+      </code></pre>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

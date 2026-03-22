@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Q-Learning 算法详解</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.0/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.0/theme/black.css">
+  <style>
+    .reveal .slides section h1 {
+      font-size: 2.5em;
+      margin-bottom: 1rem;
+    }
+    .reveal pre {
+      font-size: 0.9em;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <!-- 幻灯片1 -->
+      <section>
+        <h2>Q-Learning 核心思想</h2>
+        <p>通过 <code>Q(s,a) = r + γ·max_a' Q(s',a')</code> 逼近最优策略</p>
+        <pre><code class="hljs" data-trim>
+        # 伪代码
+        while not converged:
+            s = env.reset()
+            while not done:
+                a = ε-greedy(Q, s)
+                s', r, done = env.step(a)
+                Q(s,a) = Q(s,a) + α[r + γ·max_a' Q(s',a') - Q(s,a)]
+        </code></pre>
+      </section>
+      
+      <!-- 幻灯片2 -->
+      <section>
+        <h2>实验对比：Q-Learning vs DQN</h2>
+        <table class="table table-bordered">
+          <thead>
+            <tr><th>算法</th><th>平均奖励</th><th>收敛速度</th><th>稳定性</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Q-Learning</td><td>85.2</td><td>中等</td><td>低</td></tr>
+            <tr><td>DQN</td><td>92.7</td><td>快</td><td>高</td></tr>
+            <tr><td>Double DQN</td><td>94.1</td><td>更快</td><td>很高</td></tr>
+          </tbody>
+        </table>
+      </section>
+      
+      <!-- 幻灯片3 -->
+      <section>
+        <h2>关键改进：经验回放</h2>
+        <div class="row">
+          <div class="col-md-6">
+            <h4>传统方法问题</h4>
+            <ul>
+              <li>样本相关性高</li>
+              <li>数据利用效率低</li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <h4>DQN解决方案</h4>
+            <ul>
+              <li>存储经验池</li>
+              <li>随机采样减少相关性</li>
+              <li>提升数据利用率</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.0/reveal.min.js"></script>
+  <script>
+    Reveal.initialize({
+      slideNumber: true,
+      transition: 'slide',
+      dependencies: [
+        { src: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js' }
+      ]
+    });
+  </script>
+</body>
+</html>
