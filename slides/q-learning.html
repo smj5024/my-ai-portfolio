@@ -2,42 +2,246 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Q-Learning 算法详解</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.0/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.0/theme/black.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --accent-cyan: #00f0ff;
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+    }
+
+    .reveal {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .reveal .slides section {
+      text-align: left;
+    }
+
+    .reveal .slides section h1,
+    .reveal .slides section h2 {
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 0%, #00f0ff 60%, #8b5cf6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
+
     .reveal .slides section h1 {
       font-size: 2.5em;
-      margin-bottom: 1rem;
     }
-    .reveal pre {
+
+    .reveal .slides section h2 {
+      font-size: 1.8em;
+    }
+
+    .reveal .slides section h4 {
+      color: var(--accent-cyan);
+      font-weight: 700;
+      font-size: 1.1em;
+    }
+
+    .reveal .slides section p,
+    .reveal .slides section li {
+      color: #cbd5e1;
       font-size: 0.9em;
-      margin: 1rem 0;
+      line-height: 1.7;
+    }
+
+    .reveal .slides section code {
+      color: var(--accent-cyan);
+      background: rgba(0, 240, 255, 0.1);
+      padding: 0.15em 0.5em;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.85em;
+    }
+
+    .reveal pre {
+      font-size: 0.85em;
+      margin: 1rem auto;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 240, 255, 0.15);
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
+      position: relative;
+      width: 90%;
+    }
+
+    .reveal pre::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(135deg, #00f0ff, #8b5cf6);
+      border-radius: 12px 12px 0 0;
+    }
+
+    .reveal pre code {
+      background: transparent;
+      color: #e2e8f0;
+      padding: 1.2em;
+      font-size: 0.9em;
+    }
+
+    .reveal table {
+      margin: 1rem auto;
+      border-collapse: collapse;
+      width: 90%;
+    }
+
+    .reveal table th {
+      background: rgba(0, 240, 255, 0.1);
+      color: var(--accent-cyan);
+      font-weight: 600;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0.8em 1em;
+      border-bottom: 2px solid rgba(0, 240, 255, 0.2);
+      text-align: center;
+    }
+
+    .reveal table td {
+      padding: 0.7em 1em;
+      color: #cbd5e1;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.85em;
+      text-align: center;
+    }
+
+    .reveal table tr:hover td {
+      background: rgba(0, 240, 255, 0.04);
+    }
+
+    .reveal ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .reveal ul li {
+      position: relative;
+      padding-left: 1.5em;
+      margin-bottom: 0.5em;
+    }
+
+    .reveal ul li::before {
+      content: '\25C6';
+      position: absolute;
+      left: 0;
+      color: var(--accent-cyan);
+      font-size: 0.7em;
+      top: 0.3em;
+    }
+
+    .slide-badge {
+      display: inline-block;
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      color: var(--accent-cyan);
+      padding: 0.2em 0.8em;
+      border-radius: 50px;
+      font-size: 0.6em;
+      font-weight: 500;
+      margin-bottom: 0.8em;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      width: 90%;
+      margin: 1rem auto;
+    }
+
+    .comparison-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1.2rem;
+    }
+
+    .comparison-box.problem {
+      border-color: rgba(236, 72, 153, 0.2);
+    }
+
+    .comparison-box.solution {
+      border-color: rgba(16, 185, 129, 0.2);
+    }
+
+    .comparison-box h4 {
+      text-align: center;
+      margin-bottom: 0.8em;
+    }
+
+    .comparison-box.problem h4 { color: #ec4899; }
+    .comparison-box.solution h4 { color: var(--accent-green); }
+
+    .reveal .progress {
+      color: var(--accent-cyan);
+    }
+
+    .reveal .slide-number {
+      color: var(--accent-cyan);
+      background: rgba(0, 0, 0, 0.3);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7em;
+      border-radius: 4px;
+    }
+
+    /* Back link */
+    .back-link {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 100;
+      color: rgba(0, 240, 255, 0.6);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-family: 'Inter', sans-serif;
+      transition: color 0.3s;
+    }
+
+    .back-link:hover {
+      color: var(--accent-cyan);
     }
   </style>
 </head>
 <body>
+  <a href="../index.html" class="back-link">&larr; 返回首页</a>
+
   <div class="reveal">
     <div class="slides">
-      <!-- 幻灯片1 -->
+      <!-- Slide 1 -->
       <section>
+        <div class="slide-badge">Core Algorithm</div>
         <h2>Q-Learning 核心思想</h2>
-        <p>通过 <code>Q(s,a) = r + γ·max_a' Q(s',a')</code> 逼近最优策略</p>
+        <p style="text-align: center;">通过 <code>Q(s,a) = r + &gamma;&middot;max_a' Q(s',a')</code> 逼近最优策略</p>
         <pre><code class="hljs" data-trim>
-        # 伪代码
-        while not converged:
-            s = env.reset()
-            while not done:
-                a = ε-greedy(Q, s)
-                s', r, done = env.step(a)
-                Q(s,a) = Q(s,a) + α[r + γ·max_a' Q(s',a') - Q(s,a)]
+# 伪代码
+while not converged:
+    s = env.reset()
+    while not done:
+        a = ε-greedy(Q, s)
+        s', r, done = env.step(a)
+        Q(s,a) = Q(s,a) + α[r + γ·max_a' Q(s',a') - Q(s,a)]
         </code></pre>
       </section>
-      
-      <!-- 幻灯片2 -->
+
+      <!-- Slide 2 -->
       <section>
+        <div class="slide-badge">Performance Comparison</div>
         <h2>实验对比：Q-Learning vs DQN</h2>
-        <table class="table table-bordered">
+        <table>
           <thead>
             <tr><th>算法</th><th>平均奖励</th><th>收敛速度</th><th>稳定性</th></tr>
           </thead>
@@ -48,19 +252,21 @@
           </tbody>
         </table>
       </section>
-      
-      <!-- 幻灯片3 -->
+
+      <!-- Slide 3 -->
       <section>
+        <div class="slide-badge">Key Innovation</div>
         <h2>关键改进：经验回放</h2>
-        <div class="row">
-          <div class="col-md-6">
+        <div class="comparison-grid">
+          <div class="comparison-box problem">
             <h4>传统方法问题</h4>
             <ul>
               <li>样本相关性高</li>
               <li>数据利用效率低</li>
+              <li>训练不稳定</li>
             </ul>
           </div>
-          <div class="col-md-6">
+          <div class="comparison-box solution">
             <h4>DQN解决方案</h4>
             <ul>
               <li>存储经验池</li>
@@ -74,14 +280,16 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.0/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
   <script>
     Reveal.initialize({
       slideNumber: true,
       transition: 'slide',
-      dependencies: [
-        { src: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js' }
-      ]
+      backgroundTransition: 'fade',
+      hash: true,
+      plugins: []
     });
+    hljs.highlightAll();
   </script>
 </body>
 </html>

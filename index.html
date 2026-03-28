@@ -5,55 +5,235 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Learning Portfolio</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.0/reveal.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+
+  <!-- Floating Orbs Background -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Particle Canvas -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-      <a class="navbar-brand" href="#">AI Learning Notes</a>
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="blog">学习心得</a></li>
-        <li class="nav-item"><a class="nav-link" href="projects">项目展示</a></li>
-        <li class="nav-item"><a class="nav-link" href="slides/q-learning.html">算法PPT</a></li>
-      </ul>
+      <a class="navbar-brand" href="#">&#9670; AI Learning Notes</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="blog">&#128218; 学习心得</a></li>
+          <li class="nav-item"><a class="nav-link" href="projects">&#128187; 项目展示</a></li>
+          <li class="nav-item"><a class="nav-link" href="slides/q-learning.html">&#127891; 算法PPT</a></li>
+        </ul>
+      </div>
     </div>
   </nav>
 
-  <div class="container my-5">
-    <h1 class="text-center mb-4">深度学习与强化学习学习笔记</h1>
-    
-    <div class="row g-4">
-      <!-- 最新心得 -->
-      <div class="col-md-6">
-        <div class="card h-100 bg-light">
-          <div class="card-header bg-info text-white">最新学习心得</div>
-          <div class="card-body">
-            <h5 class="card-title">理解深度Q网络（DQN）的核心思想</h5>
-            <p class="card-text">通过经验回放和目标网络解决强化学习中的稳定性问题...</p>
-            <a href="blog/dl-basics.html" class="btn btn-info">阅读全文</a>
+  <!-- Hero Section -->
+  <div class="container">
+    <div class="hero-section">
+      <div class="hero-badge">&#9889; Exploring the Frontiers of AI</div>
+      <h1>深度学习与强化学习<br>学习笔记</h1>
+      <p class="hero-subtitle">探索神经网络的数学本质，从 Q-Learning 到 PPO，记录每一步 AI 学习旅程中的思考与实践。</p>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-value">DQN</span>
+        <span class="stat-label">核心算法</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">PPO</span>
+        <span class="stat-label">最新研究</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">PyTorch</span>
+        <span class="stat-label">技术栈</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">RL</span>
+        <span class="stat-label">强化学习</span>
+      </div>
+    </div>
+
+    <!-- Section: Latest Content -->
+    <div class="my-5">
+      <h2 class="section-title">&#128640; 最新内容</h2>
+    </div>
+
+    <div class="feature-grid">
+      <!-- Card 1: Learning Insights -->
+      <div class="card fade-in-up">
+        <div class="card-header header-cyan">&#9889; 最新学习心得</div>
+        <div class="card-body">
+          <div class="icon-box cyan">&#129504;</div>
+          <h5 class="card-title">理解深度Q网络（DQN）的核心思想</h5>
+          <p class="card-text">通过经验回放和目标网络解决强化学习中的稳定性问题，深入理解 DQN 如何实现从像素到决策的端到端学习。</p>
+          <div class="mb-3">
+            <span class="tech-tag">Deep Learning</span>
+            <span class="tech-tag purple">DQN</span>
+            <span class="tech-tag green">PyTorch</span>
           </div>
+          <a href="blog/dl-basics.html" class="btn-tech btn-tech-cyan">阅读全文 &rarr;</a>
         </div>
       </div>
-      
-      <!-- 最新项目 -->
-      <div class="col-md-6">
-        <div class="card h-100 bg-light">
-          <div class="card-header bg-success text-white">最近项目</div>
-          <div class="card-body">
-            <h5 class="card-title">基于PPO的机器人行走控制</h5>
-            <p class="card-text">使用PyTorch实现PPO算法，实现机器人在复杂地形的自适应行走...</p>
-            <a href="projects/dqn-game/index.html" class="btn btn-success">查看项目</a>
+
+      <!-- Card 2: Latest Project -->
+      <div class="card fade-in-up">
+        <div class="card-header header-green">&#128295; 最近项目</div>
+        <div class="card-body">
+          <div class="icon-box green">&#129302;</div>
+          <h5 class="card-title">基于PPO的机器人行走控制</h5>
+          <p class="card-text">使用 PyTorch 实现 PPO 算法，实现机器人在复杂地形的自适应行走，探索策略梯度方法的强大表现力。</p>
+          <div class="mb-3">
+            <span class="tech-tag">PPO</span>
+            <span class="tech-tag purple">Reinforcement Learning</span>
+            <span class="tech-tag green">Robotics</span>
           </div>
+          <a href="projects/dng-game/index.html" class="btn-tech btn-tech-green">查看项目 &rarr;</a>
         </div>
+      </div>
+
+      <!-- Card 3: Algorithm Slides -->
+      <div class="card fade-in-up">
+        <div class="card-header header-purple">&#127891; 算法演示</div>
+        <div class="card-body">
+          <div class="icon-box purple">&#128202;</div>
+          <h5 class="card-title">Q-Learning 算法详解</h5>
+          <p class="card-text">从基础 Q-Learning 到 DQN 再到 Double DQN，通过交互式幻灯片全面对比不同算法的性能表现。</p>
+          <div class="mb-3">
+            <span class="tech-tag">Q-Learning</span>
+            <span class="tech-tag purple">Comparison</span>
+            <span class="tech-tag green">Slides</span>
+          </div>
+          <a href="slides/q-learning.html" class="btn-tech btn-tech-purple">查看演示 &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Learning Path Section -->
+    <div class="my-5 pt-4">
+      <h2 class="section-title">&#128205; 学习路径</h2>
+    </div>
+
+    <div class="timeline" style="max-width: 700px;">
+      <div class="timeline-item">
+        <div class="timeline-date">阶段一</div>
+        <div class="timeline-title">神经网络基础</div>
+        <div class="timeline-desc">理解前馈网络、反向传播、激活函数，使用 PyTorch 构建 MLP</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">阶段二</div>
+        <div class="timeline-title">强化学习入门</div>
+        <div class="timeline-desc">掌握 Q-Learning 核心思想，实现表格型 Q-Learning 解决简单环境</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">阶段三</div>
+        <div class="timeline-title">深度强化学习</div>
+        <div class="timeline-desc">DQN、Double DQN、经验回放机制，实现 Atari 游戏控制</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">阶段四</div>
+        <div class="timeline-title">策略梯度方法</div>
+        <div class="timeline-desc">PPO 算法实现，机器人行走控制，探索连续动作空间</div>
       </div>
     </div>
   </div>
 
-  <footer class="bg-dark text-white text-center py-3 mt-5">
-    <div class="container">© 2023 AI Learning Portfolio | 用深度学习改变世界</div>
+  <!-- Footer -->
+  <footer>
+    <div class="container text-center">
+      <div class="footer-brand mb-2">&#9670; AI Learning Portfolio</div>
+      <div>&copy; 2024 AI Learning Notes &mdash; 用深度学习改变世界</div>
+    </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Particles Animation -->
+  <script>
+    (function() {
+      const canvas = document.getElementById('particles-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      const PARTICLE_COUNT = 60;
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function createParticle() {
+        return {
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          radius: Math.random() * 1.5 + 0.5,
+          opacity: Math.random() * 0.4 + 0.1
+        };
+      }
+
+      function init() {
+        resize();
+        particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          particles.push(createParticle());
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw particles
+        particles.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(0, 240, 255, ${p.opacity})`;
+          ctx.fill();
+        });
+
+        // Draw connections
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 150) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `rgba(0, 240, 255, ${0.08 * (1 - dist / 150)})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Update positions
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        });
+
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', resize);
+      init();
+      draw();
+    })();
+  </script>
 </body>
 </html>
