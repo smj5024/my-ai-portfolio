@@ -1,0 +1,62 @@
+---
+import { withBase } from '../lib/site';
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+const links = [
+  { href: '/', label: '首页' },
+  { href: '/roadmap/', label: '学习地图' },
+  { href: '/notes/', label: '笔记' },
+  { href: '/projects/', label: '实验' },
+  { href: '/devices/', label: '设备' },
+  { href: '/about/', label: '关于' },
+];
+
+const isActive = (href: string) => {
+  const target = withBase(href);
+  return href === '/' ? currentPath === target : currentPath.startsWith(target);
+};
+---
+
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href={withBase('/')} aria-label="EdgeMind Lab 首页">
+      <svg class="brand-mark" viewBox="0 0 42 42" aria-hidden="true">
+        <rect x="7" y="7" width="28" height="28" rx="7"></rect>
+        <path d="M13 21h5l3-7 4 14 3-7h4"></path>
+        <path d="M2 15h5M2 27h5M35 15h5M35 27h5M15 2v5M27 2v5M15 35v5M27 35v5"></path>
+      </svg>
+      <span class="brand-copy">
+        <strong>EdgeMind Lab</strong>
+        <small>边缘智体实验室</small>
+      </span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="主导航">
+      {links.map((link) => (
+        <a class:list={{ active: isActive(link.href) }} href={withBase(link.href)} aria-current={isActive(link.href) ? 'page' : undefined}>
+          {link.label}
+        </a>
+      ))}
+      <a class="search-link" href={withBase('/search/')} aria-label="搜索网站">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg>
+        搜索
+      </a>
+    </nav>
+
+    <details class="mobile-menu">
+      <summary aria-label="打开导航菜单">
+        <span></span><span></span><span></span>
+      </summary>
+      <nav aria-label="移动端导航">
+        {links.map((link) => (
+          <a class:list={{ active: isActive(link.href) }} href={withBase(link.href)}>{link.label}</a>
+        ))}
+        <a href={withBase('/search/')}>搜索</a>
+      </nav>
+    </details>
+  </div>
+</header>

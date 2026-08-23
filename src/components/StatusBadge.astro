@@ -1,0 +1,14 @@
+---
+import { statusMap, type Status } from '../lib/site';
+
+interface Props {
+  status: Status;
+}
+
+const { status } = Astro.props;
+const item = statusMap[status];
+---
+
+<span class={`status-badge status-${item.tone}`}>
+  <i aria-hidden="true"></i>{item.label}
+</span>

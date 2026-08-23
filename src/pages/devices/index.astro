@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { withBase } from '../../lib/site';
+
+const devices = (await getCollection('devices')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="设备档案" description="Raspberry Pi、高性能 MCU、可穿戴与桌面机器人端侧部署档案。">
+  <PageHero
+    eyebrow="DEVICES / 设备档案"
+    title="模型必须尊重设备的边界"
+    description="这里记录每个平台的角色、约束和实测计划。尚未完成的硬件选型不会被写成最终配置。"
+    code="HARDWARE_MATRIX"
+  />
+
+  <section class="section shell">
+    <div class="device-grid">
+      {devices.map((device) => (
+        <article class="device-card">
+          <div class="device-card-head"><span>HW-{String(device.data.order).padStart(2, '0')}</span><StatusBadge status={device.data.status} /></div>
+          <p>{device.data.role}</p>
+          <h2><a href={withBase(`/devices/${device.id}/`)}>{device.data.shortName}</a></h2>
+          <div class="device-specs">{device.data.specs.map((spec) => <div><span>{spec.label}</span><strong>{spec.value}</strong></div>)}</div>
+          <p class="device-summary">{device.data.summary}</p>
+          <a class="card-link" href={withBase(`/devices/${device.id}/`)}>查看资源与约束 <span>↗</span></a>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

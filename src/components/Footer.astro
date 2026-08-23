@@ -1,0 +1,24 @@
+---
+import { SITE, withBase } from '../lib/site';
+---
+
+<footer class="site-footer">
+  <div class="shell footer-grid">
+    <div>
+      <div class="footer-brand">EdgeMind Lab <span>/ 边缘智体实验室</span></div>
+      <p>记录真实过程：理论、实验、失败、优化与端侧部署。</p>
+    </div>
+    <div class="footer-pipeline" aria-label="实验流程">
+      <span>TRAIN</span><i>→</i><span>COMPRESS</span><i>→</i><span>DEPLOY</span>
+    </div>
+    <div class="footer-links">
+      <a href={SITE.repository} target="_blank" rel="noreferrer">GitHub 仓库 ↗</a>
+      <a href={withBase('/rss.xml')}>RSS</a>
+      <a href={withBase('/about/')}>关于本站</a>
+    </div>
+  </div>
+  <div class="shell footer-bottom">
+    <span>© {new Date().getFullYear()} SMJ</span>
+    <span>STATIC · OPEN · REPRODUCIBLE</span>
+  </div>
+</footer>

@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import { SITE, withBase } from '../../lib/site';
+---
+
+<BaseLayout title="关于本站" description="EdgeMind Lab 的目标、内容原则、技术架构和持续更新方式。">
+  <PageHero
+    eyebrow="ABOUT / 关于本站"
+    title="一个菜鸟程序员的公开实验台"
+    description="这里不是完成品陈列柜，而是从强化学习入门走向端侧智能体的长期构建记录。"
+    code="OPEN_LAB_NOTEBOOK"
+  />
+
+  <section class="section shell about-grid">
+    <div class="about-main prose">
+      <h2>为什么做这个网站</h2>
+      <p>我的目标是理解强化学习从理论到落地的完整链路，并尝试在 Raspberry Pi 4B、高性能 MCU、智能手表/手环或桌面机器人上部署小模型。</p>
+      <p>最终希望端侧 Agent 具备基础的环境感知、移动检测和语言交互能力。这个目标很长，所以网站会把它拆成可以验证的小步骤。</p>
+
+      <h2>内容原则</h2>
+      <ul>
+        <li><strong>状态透明：</strong>计划、学习中、制作中、已验证和已部署明确区分。</li>
+        <li><strong>数据可追：</strong>实机指标必须写明设备、版本、输入和测试方法。</li>
+        <li><strong>失败可用：</strong>记录失败条件和修正过程，而不只保留漂亮结果。</li>
+        <li><strong>安全优先：</strong>真实执行器必须有规则层、限幅、超时和急停。</li>
+      </ul>
+
+      <h2>网站如何维护</h2>
+      <p>本站使用 Astro 生成纯静态页面。笔记、项目和设备档案保存在 GitHub 仓库中的 Markdown 文件里，推送后由 GitHub Actions 自动构建并发布到 GitHub Pages。</p>
+      <p>CSDN 可以用于同步精选文章和获取中文技术流量；个人网站保留完整结构、项目档案与长期路线。</p>
+    </div>
+    <aside class="about-aside">
+      <div><span>站点名称</span><strong>{SITE.title}</strong><small>{SITE.chineseTitle}</small></div>
+      <div><span>当前主线</span><strong>RL → EDGE</strong><small>学习、实验、压缩、部署</small></div>
+      <div><span>内容许可</span><strong>公开学习记录</strong><small>引用时请保留来源</small></div>
+      <a class="button button-primary" href={SITE.repository} target="_blank" rel="noreferrer">访问 GitHub 仓库 ↗</a>
+      <a class="button button-ghost" href={withBase('/rss.xml')}>订阅 RSS</a>
+    </aside>
+  </section>
+</BaseLayout>

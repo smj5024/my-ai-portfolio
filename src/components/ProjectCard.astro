@@ -1,0 +1,25 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { withBase } from '../lib/site';
+import StatusBadge from './StatusBadge.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+---
+
+<article class="project-card" data-pagefind-ignore>
+  <div class="project-card-top">
+    <span class="project-index">EXP-{String(project.data.order).padStart(2, '0')}</span>
+    <StatusBadge status={project.data.status} />
+  </div>
+  <p class="project-category">{project.data.category}</p>
+  <h3><a href={withBase(`/projects/${project.id}/`)}>{project.data.title}</a></h3>
+  <p>{project.data.summary}</p>
+  <div class="project-stack">
+    {[...project.data.hardware, ...project.data.algorithms].slice(0, 4).map((item) => <span>{item}</span>)}
+  </div>
+  <a class="card-link" href={withBase(`/projects/${project.id}/`)}>查看实验档案 <span>↗</span></a>
+</article>

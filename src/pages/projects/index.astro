@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="实验档案" description="强化学习、传感器融合和端侧 Agent 项目的过程、限制与验证记录。">
+  <PageHero
+    eyebrow="EXPERIMENTS / 实验档案"
+    title="成功与失败，都要留下证据"
+    description="项目卡片不会用设想冒充结果。打开档案可以看到当前限制、完成标准和下一步。"
+    code="BUILD_VERIFY_DEPLOY"
+  />
+
+  <section class="section shell">
+    <div class="archive-intro">
+      <p><strong>{String(projects.length).padStart(2, '0')}</strong> 个公开实验方向</p>
+      <p>状态说明：制作中表示已有代码或原型；已规划表示尚未形成可验证结果。</p>
+    </div>
+    <div class="project-grid project-grid-archive">
+      {projects.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </section>
+</BaseLayout>

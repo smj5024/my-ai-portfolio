@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { roadmap } from '../../data/roadmap';
+---
+
+<BaseLayout title="学习地图" description="从强化学习理论到树莓派与 MCU 端侧部署的六阶段学习与实验路线。">
+  <PageHero
+    eyebrow="ROADMAP / 学习地图"
+    title="从公式走到真实设备"
+    description="每一阶段都以可检查的产出为结束条件。状态会随笔记、代码、实验与实机结果逐步更新。"
+    code="RL_TO_EDGE"
+  />
+
+  <section class="section shell roadmap-page">
+    <div class="roadmap-legend">
+      <span><i class="dot-cyan"></i>学习或制作中</span>
+      <span><i class="dot-amber"></i>已规划</span>
+      <span><i class="dot-green"></i>已验证或部署</span>
+    </div>
+    <ol class="roadmap-list">
+      {roadmap.map((stage) => (
+        <li class="roadmap-stage">
+          <div class="stage-index">{stage.index}</div>
+          <div class="stage-content">
+            <div class="stage-heading">
+              <div><p>STAGE {stage.index}</p><h2>{stage.title}</h2></div>
+              <StatusBadge status={stage.status} />
+            </div>
+            <p class="stage-summary">{stage.summary}</p>
+            <div class="topic-row">{stage.topics.map((topic) => <span>{topic}</span>)}</div>
+            <div class="stage-evidence"><b>完成证据</b><span>{stage.evidence}</span></div>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+</BaseLayout>

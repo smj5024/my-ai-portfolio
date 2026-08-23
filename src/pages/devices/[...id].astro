@@ -1,0 +1,33 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { withBase } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const devices = await getCollection('devices');
+  return devices.map((device) => ({ params: { id: device.id }, props: { device } }));
+}
+
+interface Props { device: CollectionEntry<'devices'> }
+const { device } = Astro.props;
+const { Content } = await render(device);
+---
+
+<BaseLayout title={device.data.title} description={device.data.summary}>
+  <article class="article-shell shell device-detail">
+    <header class="article-header">
+      <a class="breadcrumb" href={withBase('/devices/')}>← 返回设备档案</a>
+      <div class="article-status"><span>HW-{String(device.data.order).padStart(2, '0')}</span><StatusBadge status={device.data.status} /></div>
+      <p class="article-category">{device.data.role}</p>
+      <h1>{device.data.title}</h1>
+      <p>{device.data.summary}</p>
+    </header>
+    <div class="device-detail-grid">
+      <section><p class="eyebrow">PROFILE / 当前配置</p>{device.data.specs.map((spec) => <div class="spec-row"><span>{spec.label}</span><strong>{spec.value}</strong></div>)}</section>
+      <section><p class="eyebrow">SUITABLE / 适合验证</p><ul>{device.data.suitableFor.map((item) => <li>{item}</li>)}</ul></section>
+      <section><p class="eyebrow">LIMITS / 主要约束</p><ul>{device.data.constraints.map((item) => <li>{item}</li>)}</ul></section>
+    </div>
+    <div class="prose device-prose"><Content /></div>
+  </article>
+</BaseLayout>

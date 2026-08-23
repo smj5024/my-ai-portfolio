@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import { withBase } from '../../lib/site';
+---
+
+<BaseLayout title="站内搜索" description="搜索 EdgeMind Lab 的学习笔记、实验档案和设备记录。" noindex={true}>
+  <link slot="head" href={withBase('/pagefind/pagefind-ui.css')} rel="stylesheet" />
+  <PageHero
+    eyebrow="SEARCH / 站内搜索"
+    title="搜索实验室记录"
+    description="输入算法、硬件、传感器或部署关键词。搜索索引在每次生产构建时自动生成。"
+    code="PAGEFIND_INDEX"
+  />
+  <section class="section shell search-section" data-pagefind-ignore>
+    <div id="search" data-base={withBase('/')}></div>
+    <noscript>站内搜索需要启用 JavaScript。你仍可以通过顶部导航浏览所有栏目。</noscript>
+  </section>
+  <script is:inline define:vars={{ pagefindScript: withBase('/pagefind/pagefind-ui.js') }}>
+    const script = document.createElement('script');
+    script.src = pagefindScript;
+    script.onload = () => {
+      const container = document.querySelector('#search');
+      const baseUrl = container?.dataset.base || '/';
+      new window.PagefindUI({ element: '#search', showSubResults: true, baseUrl });
+    };
+    script.onerror = () => {
+      const container = document.querySelector('#search');
+      if (container) container.innerHTML = '<p class="search-hint">搜索索引只在执行生产构建后可用。请先运行 <code>npm run build</code>。</p>';
+    };
+    document.head.appendChild(script);
+  </script>
+</BaseLayout>

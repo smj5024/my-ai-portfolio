@@ -1,0 +1,44 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { formatDate, withBase } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({ params: { id: project.id }, props: { project } }));
+}
+
+interface Props { project: CollectionEntry<'projects'> }
+const { project } = Astro.props;
+const { Content, headings } = await render(project);
+---
+
+<BaseLayout title={project.data.title} description={project.data.summary}>
+  <article class="article-shell shell project-detail">
+    <header class="article-header">
+      <a class="breadcrumb" href={withBase('/projects/')}>← 返回实验档案</a>
+      <div class="article-status"><span class="project-index">EXP-{String(project.data.order).padStart(2, '0')}</span><StatusBadge status={project.data.status} /></div>
+      <p class="article-category">{project.data.category}</p>
+      <h1>{project.data.title}</h1>
+      <p>{project.data.summary}</p>
+      <div class="article-byline">
+        {project.data.started && <span>开始于 {formatDate(project.data.started)}</span>}
+        <span>更新于 {formatDate(project.data.updated)}</span>
+      </div>
+    </header>
+
+    {project.data.metrics.length > 0 && <div class="metric-grid">{project.data.metrics.map((metric) => <div><span>{metric.label}</span><strong>{metric.value}</strong></div>)}</div>}
+
+    <div class="article-layout">
+      <div class="prose"><Content /></div>
+      <aside class="article-aside">
+        <div class="aside-block"><strong>硬件 / 输入</strong><div class="tag-row">{project.data.hardware.map((item) => <span>{item}</span>)}</div></div>
+        <div class="aside-block"><strong>方法 / 算法</strong><div class="tag-row">{project.data.algorithms.map((item) => <span>{item}</span>)}</div></div>
+        {project.data.repository && <a class="button button-ghost aside-button" href={project.data.repository} target="_blank" rel="noreferrer">查看源代码 ↗</a>}
+        {project.data.demo && <a class="button button-ghost aside-button" href={project.data.demo}>打开演示 ↗</a>}
+        {headings.length > 0 && <div class="aside-block toc"><strong>本页目录</strong>{headings.filter((h) => h.depth <= 3).map((heading) => <a href={`#${heading.slug}`}>{heading.text}</a>)}</div>}
+      </aside>
+    </div>
+  </article>
+</BaseLayout>

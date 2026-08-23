@@ -1,0 +1,152 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NoteCard from '../components/NoteCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import { roadmap } from '../data/roadmap';
+import { withBase } from '../lib/site';
+
+const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
+);
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const devices = (await getCollection('devices')).sort((a, b) => a.data.order - b.data.order);
+const featuredProjects = projects.filter((project) => project.data.featured).slice(0, 2);
+const latestNotes = notes.slice(0, 3);
+const activeCount = [...notes, ...projects].filter((item) => ['learning', 'building'].includes(item.data.status)).length;
+---
+
+<BaseLayout>
+  <section class="home-hero shell">
+    <div class="hero-copy">
+      <div class="lab-status"><i></i> LAB LOG / 持续构建中</div>
+      <p class="hero-kicker">REINFORCEMENT LEARNING × EDGE AI</p>
+      <h1>让小型设备拥有<br /><span>感知、决策与交互能力</span></h1>
+      <p class="hero-lead">
+        从 Bellman 方程、可复现实验，到 Raspberry Pi 与高性能 MCU 上的小模型部署。这里记录过程、失败、测量和下一步。
+      </p>
+      <div class="hero-actions">
+        <a class="button button-primary" href={withBase('/roadmap/')}>查看学习地图 <span>→</span></a>
+        <a class="button button-ghost" href={withBase('/projects/')}>进入实验档案</a>
+      </div>
+      <div class="hero-note">不把计划包装成成果 · 不用桌面数据代替实机结果</div>
+    </div>
+
+    <div class="hero-console" aria-label="端侧智能体技术链路">
+      <div class="console-head">
+        <span><i></i> SYSTEM MAP</span>
+        <span>EDGE_AGENT.V0</span>
+      </div>
+      <div class="console-core">
+        <div class="core-ring ring-one"></div>
+        <div class="core-ring ring-two"></div>
+        <div class="core-node">
+          <strong>AGENT</strong>
+          <small>闭环核心</small>
+        </div>
+        <div class="satellite node-sense"><span>01</span><b>SENSE</b><small>视觉 · IMU · 音频</small></div>
+        <div class="satellite node-learn"><span>02</span><b>LEARN</b><small>RL · 状态估计</small></div>
+        <div class="satellite node-deploy"><span>03</span><b>DEPLOY</b><small>Pi · MCU · INT8</small></div>
+      </div>
+      <div class="console-stream">
+        <span>INPUT</span><i></i><span>POLICY</span><i></i><span>ACTION</span><i></i><span>FEEDBACK</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="signal-strip" aria-label="网站进展概览">
+    <div class="shell signal-grid">
+      <div><strong>{String(roadmap.length).padStart(2, '0')}</strong><span>路线阶段</span></div>
+      <div><strong>{String(notes.length).padStart(2, '0')}</strong><span>知识笔记</span></div>
+      <div><strong>{String(projects.length).padStart(2, '0')}</strong><span>实验档案</span></div>
+      <div><strong>{String(devices.length).padStart(2, '0')}</strong><span>设备方向</span></div>
+      <div><strong>{String(activeCount).padStart(2, '0')}</strong><span>正在推进</span></div>
+    </div>
+  </section>
+
+  <section class="section shell">
+    <SectionHeading
+      eyebrow="NOW / 当前现场"
+      title="正在做的事，比愿景更重要"
+      description="每个条目都标注当前状态。只有完成复现或实机测量后，才会进入“已验证”。"
+      actionHref={withBase('/projects/')}
+      actionLabel="全部实验"
+    />
+    <div class="project-grid">
+      {featuredProjects.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </section>
+
+  <section class="section section-tinted">
+    <div class="shell">
+      <SectionHeading
+        eyebrow="PATH / 技术路线"
+        title="从理论到端侧闭环"
+        description="路线按依赖关系推进，而不是堆叠热门名词。"
+        actionHref={withBase('/roadmap/')}
+        actionLabel="展开完整地图"
+      />
+      <ol class="roadmap-preview">
+        {roadmap.slice(0, 4).map((stage) => (
+          <li>
+            <div class="roadmap-number">{stage.index}</div>
+            <div class="roadmap-line"><i></i></div>
+            <div class="roadmap-preview-body">
+              <div><h3>{stage.title}</h3><StatusBadge status={stage.status} /></div>
+              <p>{stage.summary}</p>
+              <span>{stage.evidence}</span>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section shell">
+    <SectionHeading
+      eyebrow="NOTES / 最近记录"
+      title="把理解写成可检查的文字"
+      description="公式、代码和工程边界放在同一个上下文里。"
+      actionHref={withBase('/notes/')}
+      actionLabel="浏览全部笔记"
+    />
+    <div class="note-grid">
+      {latestNotes.map((note) => <NoteCard note={note} />)}
+    </div>
+  </section>
+
+  <section class="section section-tinted">
+    <div class="shell">
+      <SectionHeading
+        eyebrow="TARGETS / 设备矩阵"
+        title="同一条路线，不同的资源边界"
+        description="先在 Linux 平台验证闭环，再逐步收紧内存、功耗与算子约束。"
+        actionHref={withBase('/devices/')}
+        actionLabel="查看设备档案"
+      />
+      <div class="device-rail">
+        {devices.map((device) => (
+          <a class="device-chip" href={withBase(`/devices/${device.id}/`)}>
+            <span>{String(device.data.order).padStart(2, '0')}</span>
+            <div><strong>{device.data.shortName}</strong><small>{device.data.role}</small></div>
+            <StatusBadge status={device.data.status} />
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section shell">
+    <div class="manifesto">
+      <p class="eyebrow">WORKING PRINCIPLES / 实验原则</p>
+      <h2>先做小，测清楚，再放进真实环境。</h2>
+      <div class="manifesto-grid">
+        <div><span>01</span><strong>可复现</strong><p>固定版本、随机种子、输入和评估方法。</p></div>
+        <div><span>02</span><strong>可测量</strong><p>记录延迟、内存、功耗、误差和失败条件。</p></div>
+        <div><span>03</span><strong>可降级</strong><p>模型异常时，系统仍能进入安全状态。</p></div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

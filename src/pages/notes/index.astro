@@ -1,0 +1,59 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NoteCard from '../../components/NoteCard.astro';
+import PageHero from '../../components/PageHero.astro';
+
+const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
+);
+const filters = [
+  { id: 'all', label: '全部' },
+  { id: 'reinforcement-learning', label: '强化学习' },
+  { id: 'edge-ai', label: '端侧 AI' },
+  { id: 'engineering', label: '工程实践' },
+  { id: 'foundation', label: '基础知识' },
+];
+---
+
+<BaseLayout title="知识笔记" description="强化学习、端侧 AI、状态估计与工程部署学习笔记。">
+  <PageHero
+    eyebrow="NOTES / 知识笔记"
+    title="写下推导，也写下不知道"
+    description="文章按技术轨道组织。状态为“学习中”的内容会继续修订，代码和实测数据会在完成验证后补充。"
+    code="KNOWLEDGE_BASE"
+  />
+
+  <section class="section shell">
+    <div class="filter-bar" aria-label="按主题筛选笔记">
+      {filters.map((filter, index) => (
+        <button type="button" class:list={{ active: index === 0 }} data-filter={filter.id}>{filter.label}</button>
+      ))}
+    </div>
+    <div class="note-grid note-grid-wide" id="note-grid">
+      {notes.map((note) => (
+        <div data-track={note.data.track}><NoteCard note={note} /></div>
+      ))}
+    </div>
+    <p class="empty-state" id="note-empty" hidden>这个分类暂时还没有公开笔记。</p>
+  </section>
+
+  <script>
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+    const cards = document.querySelectorAll<HTMLElement>('[data-track]');
+    const empty = document.querySelector<HTMLElement>('#note-empty');
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter;
+        let visible = 0;
+        buttons.forEach((item) => item.classList.toggle('active', item === button));
+        cards.forEach((card) => {
+          const show = filter === 'all' || card.dataset.track === filter;
+          card.hidden = !show;
+          if (show) visible += 1;
+        });
+        if (empty) empty.hidden = visible !== 0;
+      });
+    });
+  </script>
+</BaseLayout>
